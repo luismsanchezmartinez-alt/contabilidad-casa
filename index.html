@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contabilidad Familiar 2026 - Control Financiero</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Outfit"', 'sans-serif'],
+          },
+          colors: {
+            dark: {
+              900: '#0B0F19',
+              850: '#111827',
+              800: '#151E32',
+              750: '#1A243D',
+              700: '#222F4C',
+              600: '#334155'
+            },
+            emerald: {
+              400: '#34D399',
+              500: '#10B981',
+              600: '#059669',
+            },
+            indigo: {
+              400: '#818CF8',
+              500: '#6366F1',
+              600: '#4F46E5',
+            },
+            cyan: {
+              400: '#22D3EE',
+              500: '#06B6D4',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos Glassmorphism y scrollbar personalizada */
+    body {
+      background-color: #070B14;
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+    }
+    .glass-card-hover {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px 0 rgba(99, 102, 241, 0.15);
+      transform: translateY(-2px);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.25);
+    }
+    .glow-indigo {
+      box-shadow: 0 0 20px -3px rgba(99, 102, 241, 0.25);
+    }
+    /* Estilos de tabla y scroll */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F2937;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #374151;
+    }
+    @media print {
+      body { background-color: #fff; color: #000; }
+      .no-print { display: none !important; }
+      .glass-card { background: #fff !important; border: 1px solid #ccc !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-indigo-500 selection:text-white pb-16">
+
+  <!-- Glow ambiental de fondo -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+  <div class="fixed bottom-10 right-1/4 w-[30rem] h-[30rem] bg-emerald-600/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- Header Superior -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/80 border-b border-white/5 py-4 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-500 via-indigo-600 to-cyan-400 p-[1.5px] flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-chart-line text-emerald-400 text-lg"></i>
+            </div>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold font-display tracking-tight text-white flex items-center gap-2">
+              Contabilidad Familiar <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">2026</span>
+            </h1>
+            <p class="text-xs text-slate-400">Control de Flujo de Caja, Ahorro e Inversión</p>
+          </div>
+        </div>
+        <!-- Botón móvil menú o info rápida -->
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20 md:hidden">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Anual
+        </span>
+      </div>
+
+      <!-- Barra de Acciones y Filtros Principales -->
+      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+        <!-- Selector de Mes -->
+        <div class="flex items-center bg-dark-800/90 border border-white/10 rounded-xl px-3 py-1.5 shadow-inner">
+          <i class="fa-regular fa-calendar text-slate-400 text-xs mr-2"></i>
+          <select id="monthSelector" onchange="changePeriod(this.value)" class="bg-transparent text-sm font-medium text-slate-200 focus:outline-none cursor-pointer">
+            <option value="all" class="bg-dark-850 text-white">📅 Año Completo (2026)</option>
+            <option value="0" class="bg-dark-850 text-white">Enero (Extra)</option>
+            <option value="1" class="bg-dark-850 text-white">Febrero</option>
+            <option value="2" class="bg-dark-850 text-white">Marzo</option>
+            <option value="3" class="bg-dark-850 text-white">Abril</option>
+            <option value="4" class="bg-dark-850 text-white">Mayo</option>
+            <option value="5" class="bg-dark-850 text-white">Junio</option>
+            <option value="6" class="bg-dark-850 text-white">Julio (Extra)</option>
+            <option value="7" class="bg-dark-850 text-white">Agosto</option>
+            <option value="8" class="bg-dark-850 text-white">Septiembre</option>
+            <option value="9" class="bg-dark-850 text-white">Octubre</option>
+            <option value="10" class="bg-dark-850 text-white">Noviembre</option>
+            <option value="11" class="bg-dark-850 text-white">Diciembre</option>
+          </select>
+        </div>
+
+        <!-- Botón Exportar PDF / Imprimir -->
+        <button onclick="window.print()" class="no-print flex items-center gap-2 bg-dark-800 hover:bg-dark-750 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold border border-white/10 transition shadow-sm hover:border-slate-400/40">
+          <i class="fa-solid fa-file-pdf text-red-400"></i>
+          <span>Imprimir / PDF</span>
+        </button>
+
+        <!-- Botón Mobile App PWA info modal -->
+        <button onclick="toggleModal('appGuideModal')" class="no-print flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-md shadow-indigo-600/30 transition">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <span>¿Tener en el Móvil?</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+
+    <!-- Fila de Píldoras de Navegación por pestañas -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-white/5">
+      <button onclick="switchTab('tab-dashboard')" id="btn-tab-dashboard" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-indigo-600 text-white shadow-lg shadow-indigo-500/25">
+        <i class="fa-solid fa-gauge mr-1.5"></i> Dashboard General
+      </button>
+      <button onclick="switchTab('tab-gastos')" id="btn-tab-gastos" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 border border-white/5">
+        <i class="fa-solid fa-receipt mr-1.5"></i> Desglose de Recibos y Gastos
+      </button>
+      <button onclick="switchTab('tab-huchas')" id="btn-tab-huchas" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 border border-white/5">
+        <i class="fa-solid fa-piggy-bank mr-1.5"></i> Huchas & Patrimonio (51.645 €)
+      </button>
+      <button onclick="switchTab('tab-simulador')" id="btn-tab-simulador" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 border border-white/5">
+        <i class="fa-solid fa-sliders mr-1.5"></i> Simulador de Ahorro "What-If"
+      </button>
+    </div>
+
+    <!-- SECCIÓN DE KPIs PRINCIPALES -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      
+      <!-- KPI 1: Ingresos -->
+      <div class="glass-card glass-card-hover p-4 relative overflow-hidden">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-medium text-slate-400 tracking-wide uppercase">Ingresos Estimados</span>
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-sm">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="text-2xl font-extrabold font-display text-white tracking-tight" id="kpiIngresos">85.581,80 €</p>
+          <div class="flex items-center gap-1.5 mt-1 text-xs text-emerald-400 font-medium">
+            <i class="fa-solid fa-arrow-up"></i>
+            <span>5.381,81 €/mes base + 2 Extras</span>
+          </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-emerald-500/5 rounded-full blur-xl pointer-events-none"></div>
+      </div>
+
+      <!-- KPI 2: Gastos Totales -->
+      <div class="glass-card glass-card-hover p-4 relative overflow-hidden">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-medium text-slate-400 tracking-wide uppercase">Gastos Totales</span>
+          <div class="w-8 h-8 rounded-lg bg-rose-500/15 flex items-center justify-center text-rose-400 text-sm">
+            <i class="fa-solid fa-credit-card"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="text-2xl font-extrabold font-display text-white tracking-tight" id="kpiGastos">39.044,23 €</p>
+          <div class="flex items-center gap-1.5 mt-1 text-xs text-slate-400">
+            <span class="text-rose-400 font-semibold" id="kpiGastosPct">45,6%</span>
+            <span>sobre el total ingresado</span>
+          </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-rose-500/5 rounded-full blur-xl pointer-events-none"></div>
+      </div>
+
+      <!-- KPI 3: Ahorro Fijo Programado -->
+      <div class="glass-card glass-card-hover p-4 relative overflow-hidden">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-medium text-slate-400 tracking-wide uppercase">Ahorro Fijo Huchas</span>
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center text-indigo-400 text-sm">
+            <i class="fa-solid fa-vault"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="text-2xl font-extrabold font-display text-indigo-300 tracking-tight" id="kpiAhorroFijo">10.800,00 €</p>
+          <div class="flex items-center gap-1.5 mt-1 text-xs text-indigo-400 font-medium">
+            <i class="fa-solid fa-check-double"></i>
+            <span>900,00 € al mes (Casa, P, G)</span>
+          </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-indigo-500/5 rounded-full blur-xl pointer-events-none"></div>
+      </div>
+
+      <!-- KPI 4: Remanente Libre -->
+      <div class="glass-card glass-card-hover p-4 relative overflow-hidden border-emerald-500/30">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-medium text-slate-300 tracking-wide uppercase">Remanente Neto Libre</span>
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center text-cyan-400 text-sm">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="text-2xl font-extrabold font-display text-emerald-400 tracking-tight" id="kpiRemanente">35.737,57 €</p>
+          <div class="flex items-center gap-1.5 mt-1 text-xs text-cyan-400 font-medium">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span id="kpiTasaAhorro">54,4% Tasa Ahorro Efectiva</span>
+          </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl pointer-events-none"></div>
+      </div>
+
+      <!-- KPI 5: Liquidez & Cuentas -->
+      <div class="glass-card glass-card-hover p-4 relative overflow-hidden bg-gradient-to-br from-dark-850 to-dark-800">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-medium text-slate-400 tracking-wide uppercase">Liquidez en Cuentas</span>
+          <div class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 text-sm">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="text-2xl font-extrabold font-display text-amber-300 tracking-tight">53.500,00 €</p>
+          <div class="flex items-center gap-1.5 mt-1 text-xs text-slate-400">
+            <span class="text-emerald-400 font-semibold">2,5% - 3,5%</span>
+            <span>Remuneración activa</span>
+          </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-amber-500/5 rounded-full blur-xl pointer-events-none"></div>
+      </div>
+    </section>
+
+    <!-- CONTENEDOR DE PESTAÑAS -->
+    
+    <!-- PESTAÑA 1: DASHBOARD GENERAL -->
+    <div id="tab-dashboard" class="tab-content space-y-6">
+      
+      <!-- Fila de Gráficas 1: Flujo Mensual e Ingresos vs Gastos -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Gráfica de Barras Principal (2 cols) -->
+        <div class="glass-card p-5 lg:col-span-2 flex flex-col justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/5 gap-2">
+            <div>
+              <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+                <i class="fa-solid fa-chart-column text-indigo-400"></i>
+                Evolución de Flujo Mensual (2026)
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Ingresos vs Gastos + Ahorro y Saldo Remanente generado mes a mes</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+              <span class="inline-flex items-center gap-1.5 text-slate-300">
+                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span> Ingresos
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-slate-300">
+                <span class="w-2.5 h-2.5 rounded-sm bg-rose-500"></span> Gastos + Ahorro
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-slate-300">
+                <span class="w-2.5 h-2.5 rounded-sm bg-cyan-400"></span> Remanente
+              </span>
+            </div>
+          </div>
+          <div class="relative w-full h-80 pt-4">
+            <canvas id="monthlyFlowChart"></canvas>
+          </div>
+          <div class="mt-3 pt-3 border-t border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+            <div class="bg-dark-800/60 p-2 rounded-lg">
+              <span class="text-slate-400 block text-[11px]">Mes más Alto</span>
+              <span class="font-bold text-emerald-400">Julio (16.381 €)</span>
+            </div>
+            <div class="bg-dark-800/60 p-2 rounded-lg">
+              <span class="text-slate-400 block text-[11px]">Gasto Promedio</span>
+              <span class="font-bold text-rose-400">3.253 € / mes</span>
+            </div>
+            <div class="bg-dark-800/60 p-2 rounded-lg">
+              <span class="text-slate-400 block text-[11px]">Pico de Remanente</span>
+              <span class="font-bold text-cyan-400">Julio (+12.399 €)</span>
+            </div>
+            <div class="bg-dark-800/60 p-2 rounded-lg">
+              <span class="text-slate-400 block text-[11px]">Media Remanente</span>
+              <span class="font-bold text-indigo-400">2.978 € / mes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donut de Categorías de Gastos (1 col) -->
+        <div class="glass-card p-5 flex flex-col justify-between">
+          <div class="pb-3 border-b border-white/5">
+            <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+              Distribución de Gastos
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Por familias y grandes partidas del año</p>
+          </div>
+          <div class="relative w-full h-64 my-auto flex items-center justify-center">
+            <canvas id="expensesDonutChart"></canvas>
+          </div>
+          <div class="mt-2 space-y-1.5 text-xs">
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Vivienda & Hipoteca
+              </span>
+              <span class="font-mono font-semibold">12.195 € (31,2%)</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Supermercado / Comida
+              </span>
+              <span class="font-mono font-semibold">10.800 € (27,7%)</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Ayuda Hogar (Ani)
+              </span>
+              <span class="font-mono font-semibold">4.872 € (12,5%)</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Niños, Actividades & Salud
+              </span>
+              <span class="font-mono font-semibold">5.820 € (14,9%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 2: Resumen de Cuentas Bancarias y Balance Patrimonial -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Cuentas y Reparto de Liquidez -->
+        <div class="glass-card p-5 lg:col-span-2">
+          <div class="flex justify-between items-center pb-4 border-b border-white/5">
+            <div>
+              <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+                <i class="fa-solid fa-wallet text-emerald-400"></i>
+                Distribución de Patrimonio y Liquidez (53.500 €)
+              </h2>
+              <p class="text-xs text-slate-400">Situación de tesorería en bancos y activos remunerados</p>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 font-mono font-semibold border border-indigo-500/20">
+              100% Disponible
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <!-- Item 1: Trade Republic Cash -->
+            <div class="p-3.5 rounded-xl bg-dark-800/80 border border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-dark-750 flex items-center justify-center font-bold text-slate-200">
+                  TR
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-white">Trade Republic Efectivo</h3>
+                  <p class="text-[11px] text-emerald-400 font-medium">Interés ~3,25% mensual</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-base font-bold font-mono text-white">20.000,00 €</p>
+                <span class="text-[11px] text-slate-400">37,4% del total</span>
+              </div>
+            </div>
+
+            <!-- Item 2: ING Depósitos -->
+            <div class="p-3.5 rounded-xl bg-dark-800/80 border border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold">
+                  ING
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-white">ING Direct - Depósitos</h3>
+                  <p class="text-[11px] text-slate-400">Depósito a plazo asegurado</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-base font-bold font-mono text-white">21.500,00 €</p>
+                <span class="text-[11px] text-slate-400">40,2% del total</span>
+              </div>
+            </div>
+
+            <!-- Item 3: ING Cuenta Naranja -->
+            <div class="p-3.5 rounded-xl bg-dark-800/80 border border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-white">ING Cuenta Naranja</h3>
+                  <p class="text-[11px] text-slate-400">Colchón operativo inmediato</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-base font-bold font-mono text-white">4.000,00 €</p>
+                <span class="text-[11px] text-slate-400">7,5% del total</span>
+              </div>
+            </div>
+
+            <!-- Item 4: Trade Republic BTC -->
+            <div class="p-3.5 rounded-xl bg-dark-800/80 border border-white/5 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-base">
+                  <i class="fa-brands fa-bitcoin"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-white">Trade Republic Bitcoin</h3>
+                  <p class="text-[11px] text-amber-400">Inversión largo plazo</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-base font-bold font-mono text-amber-300">7.000,00 €</p>
+                <span class="text-[11px] text-slate-400">13,1% del total</span>
+              </div>
+            </div>
+
+            <!-- Item 5: Ibercaja Operativa -->
+            <div class="p-3.5 rounded-xl bg-dark-800/80 border border-white/5 flex items-center justify-between md:col-span-2">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center font-bold">
+                  IB
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-white">Ibercaja - Cuenta Corriente del Día a Día</h3>
+                  <p class="text-[11px] text-slate-400">Cargos de hipoteca, recibos de colegios y suministros mensuales</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-base font-bold font-mono text-white">1.000,00 €</p>
+                <span class="text-[11px] text-emerald-400">Saldo vivo rotativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Huchas de los niños y Casa al día -->
+        <div class="glass-card p-5 flex flex-col justify-between">
+          <div class="pb-3 border-b border-white/5">
+            <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+              <i class="fa-solid fa-bullseye text-indigo-400"></i>
+              Ahorro Automático Anual
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Acumulado planificado para final de 2026</p>
+          </div>
+
+          <div class="space-y-4 my-auto py-2">
+            <!-- Hucha 1 -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-200">Hucha Pablo</span>
+                <span class="font-bold text-indigo-400 font-mono">18.645 € <span class="text-slate-500 text-[10px]">(+200€/m)</span></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-dark-800 overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+
+            <!-- Hucha 2 -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-200">Hucha Guille</span>
+                <span class="font-bold text-cyan-400 font-mono">9.000 € <span class="text-slate-500 text-[10px]">(+200€/m)</span></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-dark-800 overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 rounded-full" style="width: 60%"></div>
+              </div>
+            </div>
+
+            <!-- Hucha 3 -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-200">Fondo Común Casa</span>
+                <span class="font-bold text-emerald-400 font-mono">17.000 € <span class="text-slate-500 text-[10px]">(+500€/m)</span></span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-dark-800 overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full" style="width: 78%"></div>
+              </div>
+            </div>
+
+            <!-- Hucha 4 -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-slate-200">Cartera Cripto (BTC)</span>
+                <span class="font-bold text-amber-400 font-mono">7.000 €</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-dark-800 overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-between">
+            <span class="text-xs text-indigo-300 font-medium">Total Huchas proyectado:</span>
+            <span class="text-sm font-bold font-mono text-white">51.645,00 €</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: DESGLOSE DE GASTOS Y RECIBOS -->
+    <div id="tab-gastos" class="tab-content space-y-6 hidden">
+      <div class="glass-card p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/5">
+          <div>
+            <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-rose-400"></i>
+              Auditoría y Desglose de Gastos del Hogar
+            </h2>
+            <p class="text-xs text-slate-400">Todos los conceptos fijos, variables y suministros de la vivienda</p>
+          </div>
+
+          <!-- Filtro rápido por texto y categoría -->
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="expenseSearchInput" onkeyup="filterExpensesTable()" placeholder="Buscar concepto (ej: hipoteca, seguro)..." class="bg-dark-800/90 border border-white/10 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-48 sm:w-64">
+            </div>
+
+            <select id="expenseCategoryFilter" onchange="filterExpensesTable()" class="bg-dark-800 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none cursor-pointer">
+              <option value="ALL">Todas las Categorías</option>
+              <option value="Vivienda">Vivienda e Hipoteca</option>
+              <option value="Alimentación">Alimentación</option>
+              <option value="Servicios">Personal y Hogar</option>
+              <option value="Educación">Educación / Niños</option>
+              <option value="Seguros">Seguros y Salud</option>
+              <option value="Vehículos">Vehículos</option>
+              <option value="Suministros">Suministros</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabla interactiva -->
+        <div class="overflow-x-auto mt-4 rounded-xl border border-white/5">
+          <table class="w-full text-left text-xs text-slate-300" id="expensesTable">
+            <thead class="bg-dark-800/90 text-slate-400 uppercase font-semibold text-[11px] border-b border-white/5">
+              <tr>
+                <th class="py-3 px-4">Concepto / Proveedor</th>
+                <th class="py-3 px-4">Categoría</th>
+                <th class="py-3 px-4">Frecuencia / Mes de Cobro</th>
+                <th class="py-3 px-4 text-right">Importe Recibo</th>
+                <th class="py-3 px-4 text-right">Impacto Anualizado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5" id="expensesTableBody">
+              <!-- Se rellena dinámicamente con JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumen pie de tabla -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mt-4 text-xs text-slate-400 gap-2">
+          <p id="tableCounterText">Mostrando 18 conceptos registrados</p>
+          <div class="flex items-center gap-4">
+            <span class="text-white font-medium">Gasto Fijo Base Mensual: <span class="text-rose-400 font-bold font-mono">~2.720,00 €</span></span>
+            <span class="text-white font-medium">Gasto Total Anual: <span class="text-rose-400 font-bold font-mono">39.044,23 €</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: HUCHAS & PATRIMONIO -->
+    <div id="tab-huchas" class="tab-content space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Gráfica de Evolución Huchas -->
+        <div class="glass-card p-5 lg:col-span-2">
+          <div class="pb-3 border-b border-white/5">
+            <h2 class="text-base font-bold text-white font-display flex items-center gap-2">
+              <i class="fa-solid fa-arrow-trend-up text-indigo-400"></i>
+              Proyección de Ahorro Acumulado en Huchas (2026)
+            </h2>
+            <p class="text-xs text-slate-400">Crecimiento mensual sostenido (+900 €/mes automáticos)</p>
+          </div>
+          <div class="relative w-full h-80 pt-4">
+            <canvas id="savingsGoalChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Tarjetas detalle de Huchas -->
+        <div class="space-y-4">
+          <div class="glass-card p-4 border-l-4 border-emerald-500">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-400">Fondo Imprevistos / Hogar</span>
+                <h3 class="text-base font-bold text-white mt-0.5">Fondo Casa</h3>
+                <p class="text-xs text-slate-400">500 € al mes programados</p>
+              </div>
+              <span class="text-lg font-bold font-mono text-emerald-400">17.000 €</span>
+            </div>
+            <div class="mt-3 text-[11px] text-slate-300 bg-dark-800/60 p-2.5 rounded-lg">
+              Destinado a reformas, sustitución de electrodomésticos o seguros anuales extraordinarios.
+            </div>
+          </div>
+
+          <div class="glass-card p-4 border-l-4 border-indigo-500">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-bold tracking-wider text-indigo-400">Futuro Pablo</span>
+                <h3 class="text-base font-bold text-white mt-0.5">Hucha Pablo</h3>
+                <p class="text-xs text-slate-400">200 € al mes programados</p>
+              </div>
+              <span class="text-lg font-bold font-mono text-indigo-400">18.645 €</span>
+            </div>
+            <div class="mt-3 text-[11px] text-slate-300 bg-dark-800/60 p-2.5 rounded-lg">
+              Fondo acumulado de estudios y emancipación con aportaciones continuas.
+            </div>
+          </div>
+
+          <div class="glass-card p-4 border-l-4 border-cyan-500">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-bold tracking-wider text-cyan-400">Futuro Guille</span>
+                <h3 class="text-base font-bold text-white mt-0.5">Hucha Guille</h3>
+                <p class="text-xs text-slate-400">200 € al mes programados</p>
+              </div>
+              <span class="text-lg font-bold font-mono text-cyan-400">9.000 €</span>
+            </div>
+            <div class="mt-3 text-[11px] text-slate-300 bg-dark-800/60 p-2.5 rounded-lg">
+              Ahorro de crecimiento equivalente garantizado para su educación superior.
+            </div>
+          </div>
+
+          <div class="glass-card p-4 border-l-4 border-amber-500">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] uppercase font-bold tracking-wider text-amber-400">Inversión Asimétrica</span>
+                <h3 class="text-base font-bold text-white mt-0.5">Reserva Bitcoin (BTC)</h3>
+                <p class="text-xs text-slate-400">Custodiado en Trade Republic</p>
+              </div>
+              <span class="text-lg font-bold font-mono text-amber-400">7.000 €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: SIMULADOR DE AHORRO "WHAT-IF" -->
+    <div id="tab-simulador" class="tab-content space-y-6 hidden">
+      <div class="glass-card p-6">
+        <div class="max-w-3xl">
+          <h2 class="text-lg font-bold text-white font-display flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-indigo-400"></i>
+            Simulador de Escenarios Financieros ("What-If")
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Mueve los controles para simular variaciones en el gasto mensual de comida, ocio o ahorro sistemático y comprueba cómo impacta en tu remanente anual disponible.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+          
+          <!-- Sliders de Ajuste -->
+          <div class="space-y-6 bg-dark-800/60 p-5 rounded-2xl border border-white/5">
+            <!-- Slider 1: Comida / Supermercado -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-2">
+                <span class="font-medium text-slate-200">Gasto Supermercado & Alimentación:</span>
+                <span class="font-mono font-bold text-emerald-400" id="simFoodLabel">900 € / mes</span>
+              </div>
+              <input type="range" id="simFoodInput" min="600" max="1500" step="50" value="900" oninput="runSimulation()" class="w-full accent-indigo-500 bg-dark-700 h-2 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>600 €</span>
+                <span>Base actual: 900 €</span>
+                <span>1.500 €</span>
+              </div>
+            </div>
+
+            <!-- Slider 2: Ahorro programado en huchas -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-2">
+                <span class="font-medium text-slate-200">Ahorro Huchas Programado (Casa + Niños):</span>
+                <span class="font-mono font-bold text-indigo-400" id="simSavingsLabel">900 € / mes</span>
+              </div>
+              <input type="range" id="simSavingsInput" min="400" max="2000" step="100" value="900" oninput="runSimulation()" class="w-full accent-indigo-500 bg-dark-700 h-2 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>400 €</span>
+                <span>Base actual: 900 €</span>
+                <span>2.000 €</span>
+              </div>
+            </div>
+
+            <!-- Slider 3: Extras imprevistos anuales -->
+            <div>
+              <div class="flex justify-between items-center text-xs mb-2">
+                <span class="font-medium text-slate-200">Bolsa para Imprevistos / Viajes Vacaciones:</span>
+                <span class="font-mono font-bold text-amber-400" id="simExtraLabel">4.000 € / año</span>
+              </div>
+              <input type="range" id="simExtraInput" min="0" max="12000" step="500" value="4000" oninput="runSimulation()" class="w-full accent-indigo-500 bg-dark-700 h-2 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>0 €</span>
+                <span>4.000 €</span>
+                <span>12.000 €</span>
+              </div>
+            </div>
+
+            <button onclick="resetSimulation()" class="w-full py-2 bg-dark-750 hover:bg-dark-700 text-xs text-slate-300 font-semibold rounded-xl border border-white/5 transition">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Restaurar Valores Originales del Excel
+            </button>
+          </div>
+
+          <!-- Resultados Proyectados -->
+          <div class="flex flex-col justify-between p-5 rounded-2xl bg-gradient-to-br from-indigo-950/40 via-dark-800 to-dark-850 border border-indigo-500/20">
+            <div>
+              <span class="text-xs font-semibold text-indigo-400 tracking-wider uppercase">Proyección Estimada Fin de Año</span>
+              <h3 class="text-2xl font-extrabold font-display text-white mt-1">Remanente Neto Resultante</h3>
+              <p class="text-xs text-slate-400 mt-1">Dinero totalmente libre tras cubrir todos los gastos y apartar las huchas fijas.</p>
+
+              <div class="my-6">
+                <p class="text-4xl font-extrabold font-mono text-emerald-400" id="simTotalRemanente">35.737,57 €</p>
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300" id="simDeltaBadge">Sin cambio respecto al presupuesto</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 text-xs border-t border-white/10 pt-4">
+                <div class="flex justify-between text-slate-300">
+                  <span>Ahorro Total Acumulado (Huchas + Remanente):</span>
+                  <span class="font-mono font-bold text-white" id="simAhorroTotal">46.537,57 €</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>Tasa de Ahorro Real sobre Ingresos:</span>
+                  <span class="font-mono font-bold text-cyan-400" id="simTasaAhorro">54,4 %</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 p-3 bg-dark-900/60 rounded-xl border border-white/5 text-[11px] text-slate-400">
+              💡 <strong>Estrategia óptima:</strong> Al mantener un remanente mensual superior a 2.500 €, puedes derivar los excesos de tesorería a cuentas de alta remuneración como Trade Republic para amortiguar la inflación.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: GUÍA PARA INSTALAR EN MÓVIL Y ACCESO EN LA NUBE -->
+  <div id="appGuideModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-card max-w-xl w-full p-6 relative border border-indigo-500/30">
+      <button onclick="toggleModal('appGuideModal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-white font-display">Cómo tener este Dashboard en tu móvil siempre</h2>
+          <p class="text-xs text-slate-400">Opciones gratuitas, privadas y automáticas</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300">
+        <!-- Opción 1: GitHub Pages / Vercel (Recomendada) -->
+        <div class="p-3.5 rounded-xl bg-dark-800/90 border border-white/5">
+          <h3 class="font-bold text-white text-sm flex items-center gap-1.5 text-emerald-400">
+            <i class="fa-solid fa-star"></i> Opción 1: Subirlo a Vercel o GitHub Pages (100% Gratis y Privado)
+          </h3>
+          <p class="mt-1.5 text-slate-300 leading-relaxed">
+            Puedes subir este único archivo <code class="bg-dark-900 px-1 py-0.5 rounded text-indigo-300 font-mono">index.html</code> a un repositorio privado de <strong>GitHub</strong> o desplegarlo en <strong>Vercel / Netlify</strong> arrastrando el archivo. Tendrás un enlace <code class="text-slate-400">https://micontabilidad.vercel.app</code> accesible desde cualquier navegador y dispositivo.
+          </p>
+        </div>
+
+        <!-- Opción 2: Como App nativa (PWA en iPhone / Android) -->
+        <div class="p-3.5 rounded-xl bg-dark-800/90 border border-white/5">
+          <h3 class="font-bold text-white text-sm flex items-center gap-1.5 text-indigo-400">
+            <i class="fa-brands fa-apple"></i> / <i class="fa-brands fa-android"></i> Opción 2: "Añadir a la Pantalla de Inicio" (Icono de App)
+          </h3>
+          <p class="mt-1.5 text-slate-300 leading-relaxed">
+            Una vez abierto el enlace en Safari (iPhone) o Chrome (Android), pulsa en <strong>Compartir / Menú ⋮</strong> y selecciona <strong>"Añadir a la pantalla de inicio"</strong>. Se abrirá a pantalla completa como si fuese una app descargada del App Store, con carga ultra rápida y sin barras de navegador.
+          </p>
+        </div>
+
+        <!-- Opción 3: Google Drive / One Drive -->
+        <div class="p-3.5 rounded-xl bg-dark-800/90 border border-white/5">
+          <h3 class="font-bold text-white text-sm flex items-center gap-1.5 text-amber-400">
+            <i class="fa-brands fa-google-drive"></i> Opción 3: Sincronización con Google Sheets
+          </h3>
+          <p class="mt-1.5 text-slate-300 leading-relaxed">
+            Si quieres que los datos se actualicen cuando edites celdas, este mismo archivo HTML se puede conectar directamente mediante la API de Google Sheets para que lea tus gastos en tiempo real.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button onclick="toggleModal('appGuideModal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-xs">
+          Entendido, ¡gracias!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS Y LÓGICA DE DATOS -->
+  <script>
+    // DATOS MAESTROS PROVENIENTES DE LA CONTABILIDAD (EXCEL 2026)
+    const baseMonthlyIncome = 5381.81;
+    const extraMonths = { 0: 11000.00, 6: 11000.00 }; // Enero y Julio
+    const fixedMonthlySavings = 900.00; // 500 Casa + 200 Pablo + 200 Guille
+
+    // Gastos mensuales base y estacionales
+    const monthlyExpensesData = [
+      { month: 'Enero', base: 3100.00, extra: 0, desc: 'Paga Extraordinaria Enero' },
+      { month: 'Febrero', base: 2950.00, extra: 0, desc: 'Mes estándar' },
+      { month: 'Marzo', base: 3200.00, extra: 0, desc: 'Mes estándar' },
+      { month: 'Abril', base: 3150.00, extra: 450, desc: 'Seguro Moto / Coche' },
+      { month: 'Mayo', base: 3000.00, extra: 0, desc: 'Mes estándar' },
+      { month: 'Junio', base: 3400.00, extra: 300, desc: 'Fin de curso colegios' },
+      { month: 'Julio', base: 3982.00, extra: 0, desc: 'Vacaciones de verano + Extra' },
+      { month: 'Agosto', base: 3500.00, extra: 0, desc: 'Verano' },
+      { month: 'Septiembre', base: 3800.00, extra: 600, desc: 'Vuelta al cole & libros' },
+      { month: 'Octubre', base: 3100.00, extra: 0, desc: 'Mes estándar' },
+      { month: 'Noviembre', base: 2962.23, extra: 0, desc: 'Mes estándar' },
+      { month: 'Diciembre', base: 3900.00, extra: 500, desc: 'Navidad y compromisos' }
+    ];
+
+    // Detalle de recibos y conceptos recurrentes
+    const expenseItems = [
+      { name: 'Hipoteca Vivienda Principal', category: 'Vivienda', freq: 'Mensual (Día 1)', amount: 1016.25, annual: 12195.00 },
+      { name: 'Compra Supermercado & Alimentación', category: 'Alimentación', freq: 'Mensual recurrente', amount: 900.00, annual: 10800.00 },
+      { name: 'Personal del Hogar (Ani)', category: 'Servicios', freq: 'Mensual', amount: 406.00, annual: 4872.00 },
+      { name: 'Colegio Pablo (Enseñanza + Comedor)', category: 'Educación', freq: 'Mensual (Sep-Jun)', amount: 230.00, annual: 2300.00 },
+      { name: 'Colegio Guille (Enseñanza + Guardería)', category: 'Educación', freq: 'Mensual (Sep-Jun)', amount: 210.00, annual: 2100.00 },
+      { name: 'Comunidad de Propietarios', category: 'Vivienda', freq: 'Mensual', amount: 120.00, annual: 1440.00 },
+      { name: 'Luz y Gas Natural (Suministros)', category: 'Suministros', freq: 'Mensual estimado', amount: 135.00, annual: 1620.00 },
+      { name: 'Seguro Médico Sanitas Familiar', category: 'Seguros', freq: 'Mensual', amount: 118.00, annual: 1416.00 },
+      { name: 'Seguro Hogar Todo Riesgo', category: 'Seguros', freq: 'Anual (Marzo)', amount: 320.00, annual: 320.00 },
+      { name: 'Seguro Vehículo Principal Todo Riesgo', category: 'Vehículos', freq: 'Anual (Abril)', amount: 450.00, annual: 450.00 },
+      { name: 'Combustible y Peajes', category: 'Vehículos', freq: 'Mensual', amount: 120.00, annual: 1440.00 },
+      { name: 'Fibra, Telefonía y Móviles', category: 'Suministros', freq: 'Mensual', amount: 65.00, annual: 780.00 },
+      { name: 'Actividades Extraescolares Niños', category: 'Educación', freq: 'Mensual', amount: 80.00, annual: 800.00 },
+      { name: 'Impuesto Bienes Inmuebles (IBI)', category: 'Vivienda', freq: 'Anual (Junio)', amount: 580.00, annual: 580.00 },
+      { name: 'Impuesto de Circulación (IVTM)', category: 'Vehículos', freq: 'Anual (Mayo)', amount: 142.00, annual: 142.00 },
+      { name: 'Suscripciones (Netflix, iCloud, Spotify)', category: 'Suministros', freq: 'Mensual', amount: 38.00, annual: 456.00 },
+      { name: 'Farmacia, Salud y Dentista', category: 'Seguros', freq: 'Variable anual', amount: 50.00, annual: 600.00 },
+      { name: 'Mantenimiento y Reparaciones Hogar', category: 'Vivienda', freq: 'Variable anual', amount: 500.00, annual: 500.00 }
+    ];
+
+    // Variables globales para las instancias de Chart.js
+    let monthlyFlowChartInstance = null;
+    let expensesDonutChartInstance = null;
+    let savingsGoalChartInstance = null;
+
+    // INICIALIZACIÓN
+    window.onload = function() {
+      populateExpensesTable(expenseItems);
+      initMonthlyFlowChart();
+      initExpensesDonutChart();
+      initSavingsGoalChart();
+      runSimulation();
+    };
+
+    // FUNCIÓN PARA CAMBIAR ENTRE PESTAÑAS
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+        btn.classList.add('bg-dark-800', 'text-slate-400');
+      });
+
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-dark-800', 'text-slate-400');
+        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+      }
+    }
+
+    // MODAL TOGGLE
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    // CAMBIO DE PERIODO / FILTRO MES
+    function changePeriod(val) {
+      if (val === 'all') {
+        document.getElementById('kpiIngresos').innerText = '85.581,80 €';
+        document.getElementById('kpiGastos').innerText = '39.044,23 €';
+        document.getElementById('kpiAhorroFijo').innerText = '10.800,00 €';
+        document.getElementById('kpiRemanente').innerText = '35.737,57 €';
+        document.getElementById('kpiGastosPct').innerText = '45,6%';
+        document.getElementById('kpiTasaAhorro').innerText = '54,4% Tasa Ahorro Efectiva';
+      } else {
+        const monthIndex = parseInt(val);
+        const item = monthlyExpensesData[monthIndex];
+        const extraIncome = extraMonths[monthIndex] || 0;
+        const totalIncome = baseMonthlyIncome + extraIncome;
+        const totalExpense = item.base + item.extra;
+        const remanente = totalIncome - totalExpense - fixedMonthlySavings;
+        const tasa = (((fixedMonthlySavings + remanente) / totalIncome) * 100).toFixed(1);
+
+        document.getElementById('kpiIngresos').innerText = formatCurrency(totalIncome);
+        document.getElementById('kpiGastos').innerText = formatCurrency(totalExpense);
+        document.getElementById('kpiAhorroFijo').innerText = formatCurrency(fixedMonthlySavings);
+        document.getElementById('kpiRemanente').innerText = formatCurrency(remanente);
+        document.getElementById('kpiGastosPct').innerText = ((totalExpense / totalIncome) * 100).toFixed(1) + '%';
+        document.getElementById('kpiTasaAhorro').innerText = tasa + '% Tasa Ahorro Mes';
+      }
+    }
+
+    // FORMATEAR MONEDA
+    function formatCurrency(num) {
+      return num.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    }
+
+    // RENDERIZAR TABLA DE GASTOS
+    function populateExpensesTable(items) {
+      const tbody = document.getElementById('expensesTableBody');
+      tbody.innerHTML = '';
+
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-dark-750/50 transition duration-150';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-semibold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full ${getCategoryDotColor(item.category)}"></span>
+            ${item.name}
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getCategoryBadgeStyle(item.category)}">
+              ${item.category}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-slate-400">${item.freq}</td>
+          <td class="py-3 px-4 text-right font-mono text-slate-200">${formatCurrency(item.amount)}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-rose-400">${formatCurrency(item.annual)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('tableCounterText').innerText = `Mostrando ${items.length} conceptos registrados`;
+    }
+
+    function getCategoryDotColor(cat) {
+      switch(cat) {
+        case 'Vivienda': return 'bg-indigo-500';
+        case 'Alimentación': return 'bg-emerald-500';
+        case 'Servicios': return 'bg-amber-500';
+        case 'Educación': return 'bg-cyan-500';
+        case 'Seguros': return 'bg-rose-500';
+        case 'Vehículos': return 'bg-purple-500';
+        default: return 'bg-slate-500';
+      }
+    }
+
+    function getCategoryBadgeStyle(cat) {
+      switch(cat) {
+        case 'Vivienda': return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+        case 'Alimentación': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        case 'Servicios': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        case 'Educación': return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+        case 'Seguros': return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+        case 'Vehículos': return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+        default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+      }
+    }
+
+    // FILTRO DE BÚSQUEDA Y CATEGORÍA DE TABLA
+    function filterExpensesTable() {
+      const textQuery = document.getElementById('expenseSearchInput').value.toLowerCase();
+      const catQuery = document.getElementById('expenseCategoryFilter').value;
+
+      const filtered = expenseItems.filter(item => {
+        const matchesText = item.name.toLowerCase().includes(textQuery) || item.category.toLowerCase().includes(textQuery);
+        const matchesCategory = (catQuery === 'ALL') || item.category.toLowerCase() === catQuery.toLowerCase();
+        return matchesText && matchesCategory;
+      });
+
+      populateExpensesTable(filtered);
+    }
+
+    // GRÁFICA 1: FLUJO MENSUAL
+    function initMonthlyFlowChart() {
+      const ctx = document.getElementById('monthlyFlowChart').getContext('2d');
+      
+      const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const incomes = labels.map((_, i) => baseMonthlyIncome + (extraMonths[i] || 0));
+      const expenses = monthlyExpensesData.map(d => d.base + d.extra + fixedMonthlySavings);
+      const remainders = incomes.map((inc, i) => inc - expenses[i]);
+
+      monthlyFlowChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Ingresos Totales',
+              data: incomes,
+              backgroundColor: 'rgba(16, 185, 129, 0.85)',
+              borderRadius: 6,
+              barPercentage: 0.6,
+            },
+            {
+              label: 'Gastos + Huchas Programadas',
+              data: expenses,
+              backgroundColor: 'rgba(244, 63, 94, 0.8)',
+              borderRadius: 6,
+              barPercentage: 0.6,
+            },
+            {
+              label: 'Remanente Neto Libre',
+              data: remainders,
+              backgroundColor: 'rgba(34, 211, 238, 0.85)',
+              borderRadius: 6,
+              barPercentage: 0.6,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0F172A',
+              titleColor: '#fff',
+              bodyColor: '#cbd5e1',
+              padding: 10,
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + formatCurrency(context.raw);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#94a3b8',
+                callback: function(val) { return val >= 1000 ? (val/1000) + 'k €' : val + ' €'; },
+                font: { family: 'Plus Jakarta Sans', size: 11 }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // GRÁFICA 2: DONUT CATEGORÍAS
+    function initExpensesDonutChart() {
+      const ctx = document.getElementById('expensesDonutChart').getContext('2d');
+      expensesDonutChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Vivienda e Hipoteca', 'Alimentación', 'Personal Hogar (Ani)', 'Niños & Educación', 'Seguros & Salud', 'Vehículos', 'Suministros'],
+          datasets: [{
+            data: [14215, 10800, 4872, 4400, 2336, 2032, 2856],
+            backgroundColor: [
+              '#6366F1', // Indigo
+              '#10B981', // Emerald
+              '#F59E0B', // Amber
+              '#06B6D4', // Cyan
+              '#F43F5E', // Rose
+              '#A855F7', // Purple
+              '#64748B'  // Slate
+            ],
+            borderWidth: 0,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#0F172A',
+              titleColor: '#fff',
+              bodyColor: '#cbd5e1',
+              padding: 10,
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  return ' ' + context.label + ': ' + formatCurrency(context.raw);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // GRÁFICA 3: PROYECCIÓN HUCHAS
+    function initSavingsGoalChart() {
+      const ctx = document.getElementById('savingsGoalChart').getContext('2d');
+      const labels = ['Inicial', 'Feb', 'Abr', 'Jun', 'Ago', 'Oct', 'Dic (Cierre)'];
+
+      savingsGoalChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Hucha Pablo',
+              data: [16245, 16645, 17045, 17445, 17845, 18245, 18645],
+              borderColor: '#6366F1',
+              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 2,
+              pointRadius: 3
+            },
+            {
+              label: 'Fondo Común Casa',
+              data: [11000, 12000, 13000, 14000, 15000, 16000, 17000],
+              borderColor: '#10B981',
+              backgroundColor: 'rgba(16, 185, 129, 0.08)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 2,
+              pointRadius: 3
+            },
+            {
+              label: 'Hucha Guille',
+              data: [6600, 7000, 7400, 7800, 8200, 8600, 9000],
+              borderColor: '#22D3EE',
+              backgroundColor: 'transparent',
+              tension: 0.35,
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#cbd5e1', font: { family: 'Plus Jakarta Sans', size: 11 } }
+            },
+            tooltip: {
+              backgroundColor: '#0F172A',
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + formatCurrency(context.raw);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#94a3b8' }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: {
+                color: '#94a3b8',
+                callback: function(val) { return (val/1000) + 'k €'; }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // SIMULADOR INTERACTIVO "WHAT-IF"
+    function runSimulation() {
+      const food = parseFloat(document.getElementById('simFoodInput').value);
+      const savings = parseFloat(document.getElementById('simSavingsInput').value);
+      const extraYearly = parseFloat(document.getElementById('simExtraInput').value);
+
+      document.getElementById('simFoodLabel').innerText = formatCurrency(food) + ' / mes';
+      document.getElementById('simSavingsLabel').innerText = formatCurrency(savings) + ' / mes';
+      document.getElementById('simExtraLabel').innerText = formatCurrency(extraYearly) + ' / año';
+
+      // Cálculo del remanente simulado
+      // Base fija de gastos no-comida al año = 39.044,23 - (900 * 12) = 28.244,23 €
+      const otherExpensesYearly = 28244.23;
+      const totalYearlyExpenses = otherExpensesYearly + (food * 12) + extraYearly;
+      const totalYearlySavingsProg = savings * 12;
+      const totalIncome = 85581.80;
+
+      const simRemanente = totalIncome - totalYearlyExpenses - totalYearlySavingsProg;
+      const baseRemanente = 35737.57;
+      const delta = simRemanente - baseRemanente;
+
+      document.getElementById('simTotalRemanente').innerText = formatCurrency(simRemanente);
+
+      // Total ahorro (huchas + remanente)
+      const totalAhorro = totalYearlySavingsProg + simRemanente;
+      document.getElementById('simAhorroTotal').innerText = formatCurrency(totalAhorro);
+
+      const tasa = ((totalAhorro / totalIncome) * 100).toFixed(1);
+      document.getElementById('simTasaAhorro').innerText = tasa + ' %';
+
+      // Badge de variación
+      const badge = document.getElementById('simDeltaBadge');
+      if (Math.abs(delta) < 10) {
+        badge.innerText = 'Escenario base presupuestado';
+        badge.className = 'text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-500/20 text-slate-300';
+      } else if (delta > 0) {
+        badge.innerText = `+${formatCurrency(delta)} respecto a la base`;
+        badge.className = 'text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300';
+      } else {
+        badge.innerText = `${formatCurrency(delta)} respecto a la base`;
+        badge.className = 'text-xs font-semibold px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300';
+      }
+    }
+
+    function resetSimulation() {
+      document.getElementById('simFoodInput').value = 900;
+      document.getElementById('simSavingsInput').value = 900;
+      document.getElementById('simExtraInput').value = 4000;
+      runSimulation();
+    }
+  </script>
+</body>
+</html>
