@@ -456,4 +456,669 @@
       <div class="form-group">
         <label>Interés Remunerado (% TAE anual)</label>
         <input type="number" step="0.01" id="modalAccountInteres" placeholder="Ej. 3.75, 2.5...">
-        <small style="color: var(--text-
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Pon 0 si no genera intereses.</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+        <button class="btn-primary" onclick="saveAccount()">Guardar Cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: METAS DE AHORRO -->
+  <div class="modal-overlay" id="goalModal">
+    <div class="modal">
+      <h3 style="margin-bottom: 16px;">Nueva Meta de Ahorro</h3>
+      <input type="hidden" id="modalGoalIndex">
+      <div class="form-group">
+        <label>Nombre de la Meta</label>
+        <input type="text" id="modalGoalNombre" placeholder="Ej. Viaje Verano, Hucha Pablo, Fondo Coche...">
+      </div>
+      <div class="form-group">
+        <label>Cantidad Ahorrada Actualmente (€)</label>
+        <input type="number" step="0.01" id="modalGoalActual" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>Objetivo Total (€)</label>
+        <input type="number" step="0.01" id="modalGoalObjetivo" placeholder="Ej. 5000">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModals()">Cancelar</button>
+        <button class="btn-primary" onclick="saveGoal()">Guardar Meta</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+    // DATOS MAESTROS INICIALES
+    const INITIAL_CONFIG = {
+      incomes: {
+        ordinaria: 6358.18,
+        extra: 11000.00,
+        extraMonths: [0, 6] // Enero y Julio
+      },
+      expenses: [
+        { concepto: "RECIBO COMUNIDAD", cat: "Hogar / Fijos", importe: 69.63, tipo: "fijo", meses: [] },
+        { concepto: "SEGURO MÉDICO LUISMA", cat: "Salud / Seguros", importe: 51.74, tipo: "fijo", meses: [] },
+        { concepto: "MOVISTAR", cat: "Hogar / Fijos", importe: 72.98, tipo: "fijo", meses: [] },
+        { concepto: "SEGURO MÉDICO JUDIT Y PABLO", cat: "Salud / Seguros", importe: 273.84, tipo: "fijo", meses: [] },
+        { concepto: "HIPOTECA", cat: "Hogar / Fijos", importe: 658.98, tipo: "fijo", meses: [] },
+        { concepto: "TGSS - ANI", cat: "Hogar / Fijos", importe: 88.63, tipo: "fijo", meses: [] },
+        { concepto: "ANI", cat: "Hogar / Fijos", importe: 223.61, tipo: "fijo", meses: [] },
+        { concepto: "ANI CAJERO", cat: "Hogar / Fijos", importe: 120.00, tipo: "fijo", meses: [] },
+        { concepto: "GASOLINA", cat: "Vehículos", importe: 100.00, tipo: "fijo", meses: [] },
+        { concepto: "SUPERMERCADO", cat: "Alimentación", importe: 625.00, tipo: "fijo", meses: [] },
+        { concepto: "CARNE", cat: "Alimentación", importe: 80.00, tipo: "fijo", meses: [] },
+        { concepto: "FRUTA", cat: "Alimentación", importe: 195.83, tipo: "fijo", meses: [] },
+        { concepto: "BICICLETA ALQUILER", cat: "Otros / Suministros", importe: 11.00, tipo: "fijo", meses: [] },
+        { concepto: "AMAZON PRIME", cat: "Hogar / Fijos", importe: 49.90, tipo: "puntual", meses: [0] },
+        { concepto: "SEGURO BMW", cat: "Vehículos", importe: 514.97, tipo: "puntual", meses: [7] },
+        { concepto: "SEGURO MERCEDES", cat: "Vehículos", importe: 329.61, tipo: "puntual", meses: [9] },
+        { concepto: "SEGURO HOGAR", cat: "Hogar / Fijos", importe: 444.00, tipo: "puntual", meses: [8] },
+        { concepto: "SEGURO VIDA 1", cat: "Salud / Seguros", importe: 290.00, tipo: "puntual", meses: [2] },
+        { concepto: "SEGURO VIDA 2", cat: "Salud / Seguros", importe: 294.00, tipo: "puntual", meses: [8] },
+        { concepto: "IBI 1", cat: "Hogar / Fijos", importe: 361.82, tipo: "puntual", meses: [9] },
+        { concepto: "IBI 2", cat: "Hogar / Fijos", importe: 361.83, tipo: "puntual", meses: [5] },
+        { concepto: "TASA BASURA 1", cat: "Hogar / Fijos", importe: 52.50, tipo: "puntual", meses: [5] },
+        { concepto: "TASA BASURA 2", cat: "Hogar / Fijos", importe: 52.50, tipo: "puntual", meses: [10] },
+        { concepto: "APA DIOCE", cat: "Educación / Hijos", importe: 27.00, tipo: "puntual", meses: [10] },
+        { concepto: "LUZ Y GAS (INVIERNO)", cat: "Otros / Suministros", importe: 250.00, tipo: "puntual", meses: [1, 3, 11] },
+        { concepto: "LUZ Y GAS (VERANO)", cat: "Otros / Suministros", importe: 75.00, tipo: "puntual", meses: [5, 7, 9] },
+        { concepto: "AQUALIA", cat: "Otros / Suministros", importe: 62.50, tipo: "puntual", meses: [2, 5, 8, 11] },
+        { concepto: "REVISIÓN MERCEDES", cat: "Vehículos", importe: 330.00, tipo: "puntual", meses: [6] },
+        { concepto: "REVISIÓN BMW", cat: "Vehículos", importe: 500.00, tipo: "puntual", meses: [7] },
+        { concepto: "ITV", cat: "Vehículos", importe: 121.02, tipo: "puntual", meses: [6] },
+        { concepto: "VISA", cat: "Hogar / Fijos", importe: 14.00, tipo: "puntual", meses: [0, 6] },
+        { concepto: "FÚTBOL PABLO (CUOTAS)", cat: "Educación / Hijos", importe: 29.44, tipo: "puntual", meses: [0, 1, 2, 3, 4, 8, 9, 10, 11] },
+        { concepto: "FÚTBOL PABLO (INSCRIPCIÓN)", cat: "Educación / Hijos", importe: 100.00, tipo: "puntual", meses: [5] },
+        { concepto: "INGLÉS", cat: "Educación / Hijos", importe: 209.00, tipo: "puntual", meses: [0, 3, 9] },
+        { concepto: "LIBROS DIOCES (PAGO 1)", cat: "Educación / Hijos", importe: 120.00, tipo: "puntual", meses: [6] },
+        { concepto: "LIBROS DIOCES (PAGO 2)", cat: "Educación / Hijos", importe: 220.00, tipo: "puntual", meses: [9] },
+        { concepto: "LIBROS DIOCES (PAGO 3)", cat: "Educación / Hijos", importe: 280.00, tipo: "puntual", meses: [10] },
+        { concepto: "DIPUTACIÓN ÁVILA", cat: "Hogar / Fijos", importe: 16.48, tipo: "puntual", meses: [3, 9] },
+        { concepto: "PELUQUERÍA", cat: "Otros / Suministros", importe: 28.00, tipo: "puntual", meses: [0, 2, 4, 6, 8, 10] }
+      ],
+      accounts: [
+        { entidad: "Trade Republic", nombre: "Efectivo Remunerado", saldo: 20000, interes: 3.75 },
+        { entidad: "Trade Republic", nombre: "Inversión Bitcoin", saldo: 7000, interes: 0.00 },
+        { entidad: "ING", nombre: "Depósito 1", saldo: 16000, interes: 2.75 },
+        { entidad: "ING", nombre: "Depósito 2", saldo: 5500, interes: 2.75 },
+        { entidad: "ING", nombre: "Cuenta Naranja", saldo: 4000, interes: 1.50 },
+        { entidad: "Ibercaja", nombre: "Cuenta Operativa Nóminas", saldo: 1000, interes: 0.00 }
+      ],
+      goals: [
+        { nombre: "Hucha Pablo", actual: 18645, objetivo: 25000 },
+        { nombre: "Hucha Guille", actual: 9000, objetivo: 20000 },
+        { nombre: "Fondo Casa / Imprevistos", actual: 17000, objetivo: 25000 },
+        { nombre: "Vacaciones en Familia", actual: 3200, objetivo: 5000 }
+      ]
+    };
+
+    // Cargar estado de LocalStorage o usar valores por defecto
+    let appData = JSON.parse(localStorage.getItem("app_finanzas_hogar_v2")) || INITIAL_CONFIG;
+
+    function saveData() {
+      localStorage.setItem("app_finanzas_hogar_v2", JSON.stringify(appData));
+    }
+
+    // NAVEGACIÓN
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      if (tabId === 'anual') renderAnnualCharts();
+    }
+
+    // CÁLCULOS MATEMÁTICOS DE MESES
+    function getMonthIncome(mIdx) {
+      return appData.incomes.extraMonths.includes(mIdx) ? appData.incomes.extra : appData.incomes.ordinaria;
+    }
+
+    function getMonthExpenses(mIdx) {
+      let sum = 0;
+      appData.expenses.forEach(e => {
+        if (e.tipo === 'fijo') {
+          sum += e.importe;
+        } else if (e.tipo === 'puntual' && e.meses && e.meses.includes(mIdx)) {
+          sum += e.importe;
+        }
+      });
+      return sum;
+    }
+
+    function getExpenseAnnualTotal(e) {
+      if (e.tipo === 'fijo') return e.importe * 12;
+      if (e.tipo === 'puntual' && e.meses) return e.importe * e.meses.length;
+      return e.importe;
+    }
+
+    // 1. RENDER DASHBOARD (MES ACTUAL)
+    function renderDashboard() {
+      const mIdx = parseInt(document.getElementById('currentMonthSelect').value);
+      const income = getMonthIncome(mIdx);
+      const expense = getMonthExpenses(mIdx);
+      const ahorro = 900;
+      const remanente = income - expense - ahorro;
+
+      document.getElementById('kpi-mes-ingresos').innerText = income.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('kpi-mes-ingresos-desc').innerText = appData.incomes.extraMonths.includes(mIdx) ? "Mes con Paga Extra" : "Nómina Ordinaria";
+      document.getElementById('kpi-mes-gastos').innerText = expense.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('kpi-mes-remanente').innerText = remanente.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('kpi-mes-remanente').style.color = remanente >= 0 ? 'var(--accent)' : 'var(--accent-red)';
+
+      // Totales patrimonio y huchas
+      let totalPatr = appData.accounts.reduce((acc, a) => acc + a.saldo, 0);
+      let totalHuchas = appData.goals.reduce((acc, g) => acc + g.actual, 0);
+      document.getElementById('kpi-total-patrimonio').innerText = totalPatr.toLocaleString('es-ES') + ' €';
+      document.getElementById('kpi-total-huchas-acum').innerText = totalHuchas.toLocaleString('es-ES') + ' €';
+
+      // Lista de gastos del mes actual
+      const tbody = document.getElementById('currentMonthExpensesBody');
+      tbody.innerHTML = '';
+      appData.expenses.forEach(e => {
+        let entra = false;
+        let desc = "";
+        if (e.tipo === 'fijo') {
+          entra = true;
+          desc = "Mensual Fijo";
+        } else if (e.tipo === 'puntual' && e.meses && e.meses.includes(mIdx)) {
+          entra = true;
+          desc = "Cargo Puntual (" + MONTH_NAMES[mIdx] + ")";
+        }
+
+        if (entra) {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${e.concepto}</strong></td>
+              <td><span style="background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:6px; font-size:0.75rem;">${e.cat}</span></td>
+              <td><span style="color: ${e.tipo === 'fijo' ? 'var(--text-muted)' : 'var(--accent-amber)'}; font-size:0.8rem;">${desc}</span></td>
+              <td><strong style="color:var(--accent-red);">${e.importe.toFixed(2)} €</strong></td>
+            </tr>
+          `;
+        }
+      });
+    }
+
+    // 2. RENDER VISIÓN ANUAL Y GRÁFICAS
+    let chartFlow = null;
+    let chartCat = null;
+    let chartSav = null;
+
+    function renderAnnualCharts() {
+      let totalInc = 0;
+      let totalExp = 0;
+      let incs = [];
+      let exps = [];
+      let rems = [];
+
+      const tableBody = document.getElementById('annualTableBody');
+      tableBody.innerHTML = '';
+
+      for (let i = 0; i < 12; i++) {
+        let inc = getMonthIncome(i);
+        let exp = getMonthExpenses(i);
+        let rem = inc - exp - 900;
+        totalInc += inc;
+        totalExp += exp;
+        incs.push(inc);
+        exps.push(exp);
+        rems.push(rem);
+
+        tableBody.innerHTML += `
+          <tr>
+            <td><strong>${MONTH_NAMES[i]}</strong></td>
+            <td style="color:var(--accent-blue);">${inc.toLocaleString('es-ES', {minimumFractionDigits: 2})} €</td>
+            <td style="color:var(--accent-red);">${exp.toLocaleString('es-ES', {minimumFractionDigits: 2})} €</td>
+            <td style="color:var(--accent-purple);">900,00 €</td>
+            <td><strong style="color:${rem >= 0 ? 'var(--accent)' : 'var(--accent-red)'}">${rem.toLocaleString('es-ES', {minimumFractionDigits: 2})} €</strong></td>
+          </tr>
+        `;
+      }
+
+      document.getElementById('kpi-anual-ingresos').innerText = totalInc.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('kpi-anual-gastos').innerText = totalExp.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('kpi-anual-remanente').innerText = (totalInc - totalExp - 10800).toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+
+      // Gráfica de Barras Mensuales
+      if (chartFlow) chartFlow.destroy();
+      chartFlow = new Chart(document.getElementById('chartAnnualFlow').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+          datasets: [
+            { label: 'Ingresos', data: incs, backgroundColor: '#3b82f6', borderRadius: 4 },
+            { label: 'Gastos Reales', data: exps, backgroundColor: '#ef4444', borderRadius: 4 },
+            { label: 'Remanente Neto', data: rems, backgroundColor: '#10b981', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+          }
+        }
+      });
+
+      // Gráfica Categorías Donut
+      let catSums = {};
+      appData.expenses.forEach(e => {
+        catSums[e.cat] = (catSums[e.cat] || 0) + getExpenseAnnualTotal(e);
+      });
+
+      if (chartCat) chartCat.destroy();
+      chartCat = new Chart(document.getElementById('chartCategories').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catSums),
+          datasets: [{
+            data: Object.values(catSums),
+            backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 10 } } } }
+        }
+      });
+
+      // Gráfica Proyección Huchas
+      let huchasAccum = [];
+      let base = 44645; // Base inicial aproximada
+      for (let i = 0; i < 12; i++) {
+        base += 900;
+        huchasAccum.push(base);
+      }
+      if (chartSav) chartSav.destroy();
+      chartSav = new Chart(document.getElementById('chartSavingsGrow').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+          datasets: [{
+            label: 'Patrimonio en Huchas (€)',
+            data: huchasAccum,
+            borderColor: '#a855f7',
+            backgroundColor: 'rgba(168, 85, 247, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#94a3b8' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+          }
+        }
+      });
+    }
+
+    // 3. RENDER HOJA DE GESTIÓN (GASTOS E INGRESOS)
+    function renderGestion() {
+      // Ingresos display
+      document.getElementById('display-nomina-ordinaria').innerText = appData.incomes.ordinaria.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('display-nomina-extra').innerText = appData.incomes.extra.toLocaleString('es-ES', {minimumFractionDigits: 2}) + ' €';
+      document.getElementById('display-meses-extra').innerText = appData.incomes.extraMonths.map(m => MONTH_NAMES[m]).join(' y ');
+
+      // Gastos completos
+      const tbody = document.getElementById('allExpensesTableBody');
+      tbody.innerHTML = '';
+      appData.expenses.forEach((e, idx) => {
+        let freqStr = e.tipo === 'fijo' 
+          ? '<span style="color:var(--accent);">Fijo Mensual (12 meses)</span>' 
+          : `<span style="color:var(--accent-amber);">${e.meses.map(m => MONTH_NAMES[m].slice(0,3)).join(', ')}</span>`;
+        let anual = getExpenseAnnualTotal(e);
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${e.concepto}</strong></td>
+            <td><span style="background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:6px; font-size:0.75rem;">${e.cat}</span></td>
+            <td>${e.importe.toFixed(2)} €</td>
+            <td>${freqStr}</td>
+            <td style="color:var(--accent-red); font-weight:700;">${anual.toLocaleString('es-ES', {minimumFractionDigits: 2})} €</td>
+            <td>
+              <button class="btn-secondary" style="padding:4px 8px;" onclick="editExpense(${idx})">✏️</button>
+              <button class="btn-danger" style="padding:4px 8px;" onclick="deleteExpense(${idx})">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 4. RENDER CUENTAS, DEPÓSITOS Y RENDIMIENTOS
+    function renderAccounts() {
+      const tbody = document.getElementById('accountsTableBody');
+      tbody.innerHTML = '';
+      let totalSaldo = 0;
+      let totalMes = 0;
+      let totalAno = 0;
+
+      appData.accounts.forEach((acc, idx) => {
+        let rendAno = acc.saldo * (acc.interes / 100);
+        let rendMes = rendAno / 12;
+        totalSaldo += acc.saldo;
+        totalAno += rendAno;
+        totalMes += rendMes;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${acc.entidad}</strong></td>
+            <td>${acc.nombre}</td>
+            <td><strong>${acc.saldo.toLocaleString('es-ES')} €</strong></td>
+            <td><span style="background:rgba(16,185,129,0.1); color:var(--accent); padding:3px 8px; border-radius:6px; font-weight:700;">${acc.interes.toFixed(2)}%</span></td>
+            <td style="color:var(--accent); font-weight:600;">+${rendMes.toFixed(2)} €</td>
+            <td style="color:var(--accent); font-weight:700;">+${rendAno.toFixed(2)} €</td>
+            <td>
+              <button class="btn-secondary" style="padding:4px 8px;" onclick="editAccount(${idx})">✏️</button>
+              <button class="btn-danger" style="padding:4px 8px;" onclick="deleteAccount(${idx})">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('total-saldo-cuentas').innerText = totalSaldo.toLocaleString('es-ES') + ' €';
+      document.getElementById('total-interes-mes').innerText = '+' + totalMes.toFixed(2) + ' €/mes';
+      document.getElementById('total-interes-ano').innerText = '+' + totalAno.toFixed(2) + ' €/año';
+    }
+
+    // 5. RENDER GENERADOR DE HUCHAS / METAS
+    function renderGoals() {
+      const container = document.getElementById('goalsContainer');
+      container.innerHTML = '';
+
+      appData.goals.forEach((g, idx) => {
+        let pct = Math.min(100, Math.round((g.actual / g.objetivo) * 100));
+        let falta = Math.max(0, g.objetivo - g.actual);
+
+        container.innerHTML += `
+          <div class="card" style="margin-bottom:0; background:rgba(15,23,42,0.65);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h4 style="font-size:1.05rem; font-weight:700;">${g.nombre}</h4>
+              <div style="display:flex; gap:6px;">
+                <button class="btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="editGoal(${idx})">✏️</button>
+                <button class="btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteGoal(${idx})">🗑️</button>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:14px; font-size:0.85rem;">
+              <span>Ahorrado: <strong style="color:var(--accent);">${g.actual.toLocaleString('es-ES')} €</strong></span>
+              <span>Meta: <strong>${g.objetivo.toLocaleString('es-ES')} €</strong></span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: ${pct}%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:0.75rem; color:var(--text-muted);">
+              <span>${pct}% conseguido</span>
+              <span>Faltan: ${falta.toLocaleString('es-ES')} €</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // MODAL HANDLERS
+    function closeModals() {
+      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+    }
+
+    // Modal Gastos
+    function openExpenseModal() {
+      document.getElementById('modalExpenseIndex').value = "";
+      document.getElementById('modalExpenseTitle').innerText = "Nuevo Gasto";
+      document.getElementById('modalExpenseConcepto').value = "";
+      document.getElementById('modalExpenseImporte').value = "";
+      document.getElementById('modalExpenseTipo').value = "fijo";
+      toggleMonthSelection();
+      document.getElementById('expenseModal').classList.add('open');
+    }
+
+    function editExpense(idx) {
+      const e = appData.expenses[idx];
+      document.getElementById('modalExpenseIndex').value = idx;
+      document.getElementById('modalExpenseTitle').innerText = "Editar Gasto";
+      document.getElementById('modalExpenseConcepto').value = e.concepto;
+      document.getElementById('modalExpenseCat').value = e.cat;
+      document.getElementById('modalExpenseImporte').value = e.importe;
+      document.getElementById('modalExpenseTipo').value = e.tipo;
+      
+      document.querySelectorAll('.month-chk').forEach(c => c.checked = false);
+      if (e.tipo === 'puntual' && e.meses) {
+        e.meses.forEach(m => {
+          let chk = document.querySelector(`.month-chk[value="${m}"]`);
+          if (chk) chk.checked = true;
+        });
+      }
+      toggleMonthSelection();
+      document.getElementById('expenseModal').classList.add('open');
+    }
+
+    function toggleMonthSelection() {
+      const tipo = document.getElementById('modalExpenseTipo').value;
+      document.getElementById('monthSelectionGroup').style.display = tipo === 'puntual' ? 'block' : 'none';
+    }
+
+    function saveExpense() {
+      const concepto = document.getElementById('modalExpenseConcepto').value.trim();
+      const cat = document.getElementById('modalExpenseCat').value;
+      const importe = parseFloat(document.getElementById('modalExpenseImporte').value);
+      const tipo = document.getElementById('modalExpenseTipo').value;
+      const idx = document.getElementById('modalExpenseIndex').value;
+
+      if (!concepto || isNaN(importe)) {
+        alert("Completa el concepto y el importe.");
+        return;
+      }
+
+      let meses = [];
+      if (tipo === 'puntual') {
+        document.querySelectorAll('.month-chk:checked').forEach(c => meses.push(parseInt(c.value)));
+        if (meses.length === 0) {
+          alert("Debes marcar al menos un mes para imputar este cargo.");
+          return;
+        }
+      }
+
+      const newExpense = { concepto, cat, importe, tipo, meses };
+      if (idx !== "") {
+        appData.expenses[idx] = newExpense;
+      } else {
+        appData.expenses.unshift(newExpense);
+      }
+
+      saveData();
+      closeModals();
+      renderAll();
+    }
+
+    function deleteExpense(idx) {
+      if (confirm(`¿Eliminar ${appData.expenses[idx].concepto}?`)) {
+        appData.expenses.splice(idx, 1);
+        saveData();
+        renderAll();
+      }
+    }
+
+    // Modal Ingresos
+    function openIncomeModal() {
+      document.getElementById('modalIncomeOrdinaria').value = appData.incomes.ordinaria;
+      document.getElementById('modalIncomeExtra').value = appData.incomes.extra;
+      document.querySelectorAll('.extra-month-chk').forEach(c => {
+        c.checked = appData.incomes.extraMonths.includes(parseInt(c.value));
+      });
+      document.getElementById('incomeModal').classList.add('open');
+    }
+
+    function saveIncomes() {
+      const ord = parseFloat(document.getElementById('modalIncomeOrdinaria').value);
+      const ext = parseFloat(document.getElementById('modalIncomeExtra').value);
+      if (isNaN(ord) || isNaN(ext)) {
+        alert("Introduce cantidades válidas.");
+        return;
+      }
+      let extras = [];
+      document.querySelectorAll('.extra-month-chk:checked').forEach(c => extras.push(parseInt(c.value)));
+
+      appData.incomes.ordinaria = ord;
+      appData.incomes.extra = ext;
+      appData.incomes.extraMonths = extras;
+
+      saveData();
+      closeModals();
+      renderAll();
+    }
+
+    // Modal Cuentas
+    function openAccountModal() {
+      document.getElementById('modalAccountIndex').value = "";
+      document.getElementById('modalAccountTitle').innerText = "Nueva Cuenta / Depósito";
+      document.getElementById('modalAccountEntidad').value = "";
+      document.getElementById('modalAccountNombre').value = "";
+      document.getElementById('modalAccountSaldo').value = "";
+      document.getElementById('modalAccountInteres').value = "0.00";
+      document.getElementById('accountModal').classList.add('open');
+    }
+
+    function editAccount(idx) {
+      const acc = appData.accounts[idx];
+      document.getElementById('modalAccountIndex').value = idx;
+      document.getElementById('modalAccountTitle').innerText = "Editar Cuenta / Depósito";
+      document.getElementById('modalAccountEntidad').value = acc.entidad;
+      document.getElementById('modalAccountNombre').value = acc.nombre;
+      document.getElementById('modalAccountSaldo').value = acc.saldo;
+      document.getElementById('modalAccountInteres').value = acc.interes;
+      document.getElementById('accountModal').classList.add('open');
+    }
+
+    function saveAccount() {
+      const entidad = document.getElementById('modalAccountEntidad').value.trim();
+      const nombre = document.getElementById('modalAccountNombre').value.trim();
+      const saldo = parseFloat(document.getElementById('modalAccountSaldo').value);
+      const interes = parseFloat(document.getElementById('modalAccountInteres').value) || 0;
+      const idx = document.getElementById('modalAccountIndex').value;
+
+      if (!entidad || !nombre || isNaN(saldo)) {
+        alert("Completa todos los campos correctamente.");
+        return;
+      }
+
+      const newAcc = { entidad, nombre, saldo, interes };
+      if (idx !== "") {
+        appData.accounts[idx] = newAcc;
+      } else {
+        appData.accounts.push(newAcc);
+      }
+
+      saveData();
+      closeModals();
+      renderAll();
+    }
+
+    function deleteAccount(idx) {
+      if (confirm(`¿Eliminar la cuenta ${appData.accounts[idx].nombre}?`)) {
+        appData.accounts.splice(idx, 1);
+        saveData();
+        renderAll();
+      }
+    }
+
+    // Modal Metas
+    function openGoalModal() {
+      document.getElementById('modalGoalIndex').value = "";
+      document.getElementById('modalGoalNombre').value = "";
+      document.getElementById('modalGoalActual').value = "";
+      document.getElementById('modalGoalObjetivo').value = "";
+      document.getElementById('goalModal').classList.add('open');
+    }
+
+    function editGoal(idx) {
+      const g = appData.goals[idx];
+      document.getElementById('modalGoalIndex').value = idx;
+      document.getElementById('modalGoalNombre').value = g.nombre;
+      document.getElementById('modalGoalActual').value = g.actual;
+      document.getElementById('modalGoalObjetivo').value = g.objetivo;
+      document.getElementById('goalModal').classList.add('open');
+    }
+
+    function saveGoal() {
+      const nombre = document.getElementById('modalGoalNombre').value.trim();
+      const actual = parseFloat(document.getElementById('modalGoalActual').value);
+      const objetivo = parseFloat(document.getElementById('modalGoalObjetivo').value);
+      const idx = document.getElementById('modalGoalIndex').value;
+
+      if (!nombre || isNaN(actual) || isNaN(objetivo)) {
+        alert("Completa todos los datos de la meta.");
+        return;
+      }
+
+      const newGoal = { nombre, actual, objetivo };
+      if (idx !== "") {
+        appData.goals[idx] = newGoal;
+      } else {
+        appData.goals.push(newGoal);
+      }
+
+      saveData();
+      closeModals();
+      renderAll();
+    }
+
+    function deleteGoal(idx) {
+      if (confirm(`¿Eliminar la meta ${appData.goals[idx].nombre}?`)) {
+        appData.goals.splice(idx, 1);
+        saveData();
+        renderAll();
+      }
+    }
+
+    // Copias de seguridad
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `contabilidad_completa_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importData(event) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.incomes && data.expenses) {
+            appData = data;
+            saveData();
+            renderAll();
+            alert("¡Datos restaurados con éxito!");
+          }
+        } catch (err) {
+          alert("Error al importar archivo.");
+        }
+      };
+      reader.readAsText(event.target.files[0]);
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderGestion();
+      renderAccounts();
+      renderGoals();
+    }
+
+    // Inicializar en el mes real actual
+    const currentMonthReal = new Date().getMonth();
+    document.getElementById('currentMonthSelect').value = currentMonthReal;
+
+    renderAll();
+  </script>
+</body>
+</html>
